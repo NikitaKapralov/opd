@@ -1,4 +1,4 @@
-﻿using EkbCulture.ServiceDefaults.Models;
+﻿using EkbCulture.AppHost.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EkbCulture.Controllers
@@ -12,6 +12,13 @@ namespace EkbCulture.Controllers
         {
             // Логика получения локаций
             return Ok(new List<Location>());
+        }
+        [HttpGet]
+        public IActionResult GetLocation(string id)
+        {
+            //реализовать логику выдачи информации по локации по её ID
+            if (id == null || )
+            return BadRequest();
         }
     }
 }

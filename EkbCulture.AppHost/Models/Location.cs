@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EkbCulture.ServiceDefaults.Models
+namespace EkbCulture.AppHost.Models
 {
     /// <summary>
     /// Класс элемента карты(объекта)

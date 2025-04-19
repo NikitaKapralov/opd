@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EkbCulture.ServiceDefaults.Models.User
+namespace EkbCulture.AppHost.Models.User
 {
     public class User
     {
@@ -22,6 +22,6 @@ namespace EkbCulture.ServiceDefaults.Models.User
 
         private HashCode passwordHash { get; } //пароли будут храниться в виде хеша (для безопасности)
 
-        private UserType userType = UserType.standardUser; //вид аккаунта ( подробнее в UserType.cs)
+        private readonly UserType userType = UserType.standardUser; //вид аккаунта ( подробнее в UserType.cs)
     }
 }

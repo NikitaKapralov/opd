@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EkbCulture.ServiceDefaults.Models.User
+namespace EkbCulture.AppHost.Models.User
 {
     enum UserType
     {

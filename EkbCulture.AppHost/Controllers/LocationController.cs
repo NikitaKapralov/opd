@@ -17,7 +17,7 @@ namespace EkbCulture.Controllers
         public IActionResult GetLocation(string id)
         {
             //реализовать логику выдачи информации по локации по её ID
-            if (id == null || )
+            //if (id == null || )
             return BadRequest();
         }
     }

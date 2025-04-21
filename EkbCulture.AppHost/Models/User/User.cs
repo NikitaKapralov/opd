@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using EkbCulture.AppHost.Models.User;
 
 namespace EkbCulture.AppHost.Models.User
 {
@@ -20,7 +22,7 @@ namespace EkbCulture.AppHost.Models.User
 
         private string phoneNumber { get; set; } //номер телефона (для авторизации)
 
-        private HashCode passwordHash { get; } //пароли будут храниться в виде хеша (для безопасности)
+        private string passwordHash { get; } //пароли будут храниться в виде хеша (для безопасности)
 
         private readonly UserType userType = UserType.standardUser; //вид аккаунта ( подробнее в UserType.cs)
     }

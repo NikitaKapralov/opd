@@ -1,0 +1,18 @@
+.register {
+    padding: 7px 63px;
+    background-color: #DCDCDC; 
+    color: #020a12;
+    border-radius: 10px;
+    font-size: 17px;
+    cursor: pointer;
+    border: none; 
+    margin-left: 655px;
+    margin-top: 120px;
+  }
+  
+  .registration-form h1 {
+    margin-left: 46%;
+    margin-top: 60px;
+    font-size: 27px;
+    margin-bottom: 80px;
+  }

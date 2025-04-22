@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using EkbCulture.AppHost.Models.User;
 
-namespace EkbCulture.AppHost.Models.User
+namespace EkbCulture.AppHost.Models
 {
     public class User
     {
@@ -16,6 +15,6 @@ namespace EkbCulture.AppHost.Models.User
 
         public string email { get; set; } //email (для авторизации)
 
-        
+
     }
 }

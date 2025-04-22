@@ -12,7 +12,7 @@ namespace EkbCulture.AppHost.Models.User
     {
         public int Id { get; set; } //ID юзера в базе данных
 
-        public int Username { get; set; } //никнейм
+        public string Username { get; set; } //никнейм
 
         public string email { get; set; } //email (для авторизации)
 

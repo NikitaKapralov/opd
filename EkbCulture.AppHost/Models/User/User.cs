@@ -10,20 +10,22 @@ namespace EkbCulture.AppHost.Models.User
 {
     public class User
     {
-        private int Id { get; set; } //ID юзера в базе данных (скрыто от посторонних глаз)
+        public int Id { get; set; } //ID юзера в базе данных
 
         public int Username { get; set; } //никнейм
 
+        public string email { get; set; } //email (для авторизации)
+
+        /* другие параметры User`a (доработаю позже)
         public int Level { get; set; } // "уровень" по посещенным местам
 
         public List<int> VisitedPlacesId { get; set; } //список посещенных мест 
-
-        private string email { get; set; } //email (для авторизации)
 
         private string phoneNumber { get; set; } //номер телефона (для авторизации)
 
         private string passwordHash { get; } //пароли будут храниться в виде хеша (для безопасности)
 
         private readonly UserType userType = UserType.standardUser; //вид аккаунта ( подробнее в UserType.cs)
+        */
     }
 }

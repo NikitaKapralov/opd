@@ -3,32 +3,38 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.Swagger;
-using Swashbuckle.SwaggerUi;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.Hosting;
 
 
-var builder = WebApplication.CreateBuilder(args); //делаем builder
+var builder = WebApplication.CreateBuilder(args);
 
-// 2. Добавляем сервисы ДО вызова builder.Build()
+// Добавляем сервисы
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Подключаем БД
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddEndpointsApiExplorer(); // 3. Добавляем Swagger ДО Build()
-builder.Services.AddSwaggerGen();
+var app = builder.Build();
 
-var app = builder.Build(); // 4. Строим приложение
+// Настройка middleware (будет Swagger если приложение на этапе Debug,т.е. разработки)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-// 5. Настройка middleware ПОСЛЕ Build()
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
-// 6. Проверка подключения к БД
+// Проверка подключения к БД
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
-    Console.WriteLine("Database connected successfully!");
+    db.Database.EnsureCreated(); // Создаёт БД, если её нет
 }
 
-app.Run(); // 7. Запускаем приложение
+app.Run();

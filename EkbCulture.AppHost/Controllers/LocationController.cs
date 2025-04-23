@@ -25,6 +25,15 @@ namespace EkbCulture.Controllers
             return Ok(locations);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetLocationById(int id)
+        {
+            var location = await _db.Locations.SingleOrDefaultAsync(x => x.Id == id);
+            if (location == null)
+                return NotFound(id);
+            return Ok(location);
+        }
+
         // POST: api/location
         [HttpPost]
         public async Task<IActionResult> Post(Location location)

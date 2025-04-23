@@ -1,4 +1,4 @@
-﻿using EkbCulture.AppHost.Models.User;
+﻿using EkbCulture.AppHost.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EkbCulture.Controllers

@@ -17,7 +17,7 @@ namespace EkbCulture.Controllers
             _db = db;
         }
 
-        // GET: api/location
+        // GET: api/locations
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -25,12 +25,12 @@ namespace EkbCulture.Controllers
             return Ok(locations);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetLocationById(int id)
         {
             var location = await _db.Locations.SingleOrDefaultAsync(x => x.Id == id);
             if (location == null)
-                return NotFound(id);
+                return NotFound($"Not Found {id} location");
             return Ok(location);
         }
 

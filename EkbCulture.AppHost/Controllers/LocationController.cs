@@ -38,9 +38,19 @@ namespace EkbCulture.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Location location)
         {
-            _db.Locations.Add(location);
-            await _db.SaveChangesAsync();
-            return Ok(location);
+            try
+            {
+                _db.Locations.Add(location);
+                await _db.SaveChangesAsync();
+                return Ok(location);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
+
+
     }
 }

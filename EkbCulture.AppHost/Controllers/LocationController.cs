@@ -83,5 +83,17 @@ namespace EkbCulture.Controllers
             await _db.SaveChangesAsync();
             return Ok(location);
         }
+
+        //DELETE: api/location/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var location = await _db.Locations.FindAsync(id);
+            if (location == null)
+                return NotFound();
+            _db.Locations.Remove(location);
+            await _db.SaveChangesAsync();
+            return Ok(id);
+        }
     }
 }

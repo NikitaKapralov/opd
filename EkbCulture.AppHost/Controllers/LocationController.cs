@@ -2,6 +2,7 @@
 using EkbCulture.AppHost.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace EkbCulture.Controllers
 {
@@ -50,7 +51,37 @@ namespace EkbCulture.Controllers
             }
         }
 
+        //PATCH: api/location/id
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(int id, 
+            [FromBody] Dictionary<string, object> updates) //где string - название поля, object - новое значение поля
+        {
+            // Находим локацию по ID
+            var location = await _db.Locations.FindAsync(id);
+            if (location == null)
+                return NotFound();
 
+            // Перебираем все поля для обновления
+            foreach (var update in updates)
+            {
+                // Ищем свойство в классе Location по имени
+                var property = typeof(Location).GetProperty(
+                    update.Key,
+                    BindingFlags.IgnoreCase //игнорируем регистр
+                    | BindingFlags.Public //только публичные свойства
+                    | BindingFlags.Instance //не статические свойства
+                );
 
+                // Если свойство найдено, обновляем его значение
+                if (property != null)
+                    property.SetValue(location, //устанавливаем нвоое значение
+                        Convert.ChangeType(update.Value, property.PropertyType)); //меняем тип с obj на нужный
+                
+            }
+
+            // Сохраняем изменения в БД
+            await _db.SaveChangesAsync();
+            return Ok(location);
+        }
     }
 }

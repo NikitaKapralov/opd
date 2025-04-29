@@ -13,7 +13,7 @@ namespace EkbCulture.AppHost.Models
 
         public string Username { get; set; } //никнейм
 
-        public string email { get; set; } //email (для авторизации)
+        public string Email { get; set; } //email (для авторизации)
 
 
     }

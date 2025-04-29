@@ -35,6 +35,23 @@ namespace EkbCulture.Controllers
             return Ok(location);
         }
 
+        // GET: api/locations/search?name=парк
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchLocations([FromQuery] string name)
+        {
+            // Если запрос пустой, возвращаются ВСЕ локации
+            if (string.IsNullOrWhiteSpace(name))
+                return Ok(await _db.Locations.ToListAsync());
+
+            // Поиск по частичному совпадению (без учета регистра)
+            var locations = await _db.Locations
+                .Where(l => l.Name.ToLower()
+                .Contains(name.ToLower()))
+                .ToListAsync();
+
+            return Ok(locations);
+        }
+
         // POST: api/location
         [HttpPost]
         public async Task<IActionResult> Post(Location location)

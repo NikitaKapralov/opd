@@ -15,6 +15,7 @@ namespace EkbCulture.AppHost.Models
 
         public string Email { get; set; } //email (для авторизации)
 
+        public string PasswordHash { get; set; } // Храним только хеш
 
     }
 }

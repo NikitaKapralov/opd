@@ -2,7 +2,7 @@
 using EkbCulture.AppHost.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using EkbCulture.AppHost.Services;
 namespace EkbCulture.Controllers
 {
     [ApiController]
@@ -36,7 +36,6 @@ namespace EkbCulture.Controllers
         }
 
         //POST api/users
-        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {

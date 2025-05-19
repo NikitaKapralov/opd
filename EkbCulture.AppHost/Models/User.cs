@@ -17,5 +17,11 @@ namespace EkbCulture.AppHost.Models
 
         public string PasswordHash { get; set; } // Храним только хеш
 
+        public int Level { get; set; }
+
+        public int[] VisitedLocations { get; set; }
+
+        byte[] Icon { get; set; } //картинка хранится в виде массива байт
+
     }
 }

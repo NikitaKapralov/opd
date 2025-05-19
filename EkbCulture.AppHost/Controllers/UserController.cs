@@ -3,6 +3,8 @@ using EkbCulture.AppHost.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EkbCulture.AppHost.Services;
+using EkbCulture.AppHost.Dtos;
+
 namespace EkbCulture.Controllers
 {
     [ApiController]
@@ -22,7 +24,14 @@ namespace EkbCulture.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _db.Users.ToListAsync();
+            var users = await _db.Users
+                 .Select(u => new UserResponseDto
+                 {
+                     Id = u.Id,
+                     Username = u.Username,
+                     Email = u.Email
+                 })
+                 .ToListAsync();
             return Ok(users);
         }
 
@@ -33,12 +42,19 @@ namespace EkbCulture.Controllers
         {
             var user = await _db.Users.SingleOrDefaultAsync(x => x.Id == id);
             if (user == null) return NotFound("Пользователь не найден");
-            return Ok(user);
+            
+            var response = new UserResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
+            return Ok(response);
         }
 
         //POST api/users
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userDto)
         {
             try
             {
@@ -46,12 +62,27 @@ namespace EkbCulture.Controllers
                     return BadRequest(ModelState);
 
                 // Проверка уникальности
-                if (await _db.Users.AnyAsync(u => u.Email == user.Email))
+                if (await _db.Users.AnyAsync(u => u.Email == userDto.Email))
                     return Conflict("Email уже занят");
+
+                var user = new User
+                {
+                    Username = userDto.Username,
+                    Email = userDto.Email,
+                    PasswordHash = PasswordHasherService.HashPassword(userDto.Password)
+                };
 
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+
+                //возвращаем без хеша
+                var response = new UserResponseDto
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Email = user.Email
+                };
+                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);
             }
             catch (Exception ex)
             {
@@ -66,12 +97,10 @@ namespace EkbCulture.Controllers
             var user = await _db.Users.FindAsync(id);
             if (user == null)
                 return NotFound();
+
             _db.Users.Remove(user);
             await _db.SaveChangesAsync();
-            return Ok(id);
+            return NoContent(); // Стандартный REST-ответ для DELETE
         }
-
-
-
     }
 }

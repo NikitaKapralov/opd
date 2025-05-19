@@ -20,7 +20,10 @@ namespace EkbCulture.AppHost.Services
             for (int i = 0; i < password.Length; i++)
             {
                 ulong c = (ulong)password[i];
-                sum += (((c * INT_FOR_HASH1) + INT_FOR_HASH2) * INT_FOR_HASH3);
+                unchecked 
+                { 
+                sum += (((c * (ulong)(i + 1) * INT_FOR_HASH1) + INT_FOR_HASH2) * INT_FOR_HASH3);
+                }
             }
             return sum.ToString();
         }

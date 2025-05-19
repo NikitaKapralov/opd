@@ -21,6 +21,16 @@ namespace EkbCulture.AppHost.Models
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
+        public double Rating { get; set; }
+
+        public int[] VisitedBy { get; set; }
+
+        public byte[] FirstImage { get; set; }
+
+        public byte[] SecondImage { get; set; }
+
+        public byte[] ThirdImage { get; set; }
+
     }
 
 

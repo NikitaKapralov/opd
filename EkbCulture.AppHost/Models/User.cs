@@ -13,8 +13,15 @@ namespace EkbCulture.AppHost.Models
 
         public string Username { get; set; } //никнейм
 
-        public string email { get; set; } //email (для авторизации)
+        public string Email { get; set; } //email (для авторизации)
 
+        public string PasswordHash { get; set; } // Храним только хеш
+
+        public int Level { get; set; }
+
+        public int[] VisitedLocations { get; set; }
+
+        byte[] Icon { get; set; } //картинка хранится в виде массива байт
 
     }
 }

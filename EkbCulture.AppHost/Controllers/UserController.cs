@@ -17,6 +17,7 @@ namespace EkbCulture.Controllers
         {
             _db = db;
         }
+
         //GET: api/users/
         [HttpGet]
         public async Task<IActionResult> GetUsers()

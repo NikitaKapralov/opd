@@ -6,6 +6,8 @@
   <title>Екатеринбург</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -49,10 +51,24 @@
     <button>Список</button>
   </div>
 
-  <div class="map-container">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d33193.6505958905!2d60.56900037621643!3d56.83571661688658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x43c16e8ea8b8589f%3A0x4bdc777e135a8eb1!2z0KbQtdC90YLRgCwg0JXQutCw0YLQtdGA0LjQvdCx0YPRgNCzLCDQodCy0LXRgNC00LvQvtCy0YHQutCw0Y8g0L7QsdC7Lg!5e1!3m2!1sru!2sru!4v1746274986905!5m2!1sru!2sru&ll=56.8386,60.6055&z=16" width="1500" height="480" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
+   <div id="map" style="height: 500px;"></div>
+   <script>
+            var map = L.map('map').setView([56.8389, 60.6057], 13);
 
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+     var marker = L.marker([56.839138, 60.606158]).addTo(map);
+marker.bindPopup(`
+  <b>Дом Н. И. Севастьянова</b><br>
+  Екатеринбург, просп. Ленина, 35<br>
+  <img src="unnamed.jpg" alt="Дом Н. И. Севастьянова" style="width: 200px; height: auto;"><br>
+  Исторический и архитектурный памятник, расположенный в Екатеринбурге по адресу проспект Ленина, 35. Назван в честь одного из владельцев здания Николая Севастьянова. Одна из местных достопримечательностей, архитектура которой особо выделяется среди особняков города.
+`).openPopup();
+
+     var marker2 = L.marker([51.515, -0.1]).addTo(map);
+     marker2.bindPopup("<b>Another place</b><br>More information here.");
+   </script>
   <button class="location-button">
     <i class="fas fa-map-marker-alt"></i> Где я?
   </button>

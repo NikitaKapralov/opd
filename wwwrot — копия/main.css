@@ -219,3 +219,7 @@ body.dark-theme .location-button{
   margin-left: 15px;
   color: #888; 
 }
+
+    .leaflet-control-attribution {
+        display: none;
+    }

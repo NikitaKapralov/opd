@@ -25,11 +25,14 @@ namespace EkbCulture.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _db.Users
-                 .Select(u => new UserResponseDto
+                 .Select(user => new UserResponseDto
                  {
-                     Id = u.Id,
-                     Username = u.Username,
-                     Email = u.Email
+                     Id = user.Id,
+                     Username = user.Username,
+                     Email = user.Email,
+                     Level = user.Level,
+                     Icon = user.Icon,
+                     VisitedLocation = user.VisitedLocations
                  })
                  .ToListAsync();
             return Ok(users);
@@ -42,12 +45,15 @@ namespace EkbCulture.Controllers
         {
             var user = await _db.Users.SingleOrDefaultAsync(x => x.Id == id);
             if (user == null) return NotFound("Пользователь не найден");
-            
+
             var response = new UserResponseDto
             {
                 Id = user.Id,
                 Username = user.Username,
-                Email = user.Email
+                Email = user.Email,
+                Level = user.Level,
+                Icon = user.Icon,
+                VisitedLocation = user.VisitedLocations
             };
             return Ok(response);
         }
@@ -80,7 +86,10 @@ namespace EkbCulture.Controllers
                 {
                     Id = user.Id,
                     Username = user.Username,
-                    Email = user.Email
+                    Email = user.Email,
+                    Level = user.Level,
+                    Icon = user.Icon,
+                    VisitedLocation = user.VisitedLocations
                 };
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);
             }
@@ -101,6 +110,51 @@ namespace EkbCulture.Controllers
             _db.Users.Remove(user);
             await _db.SaveChangesAsync();
             return NoContent(); // Стандартный REST-ответ для DELETE
+        }
+
+
+        //PATCH: api/users/{id}
+        [HttpPatch({"id"})]
+        public async Task<IActionResult> ChangeUserData(int id,
+            [FromBody] Dictionary<string, object> updates) //где string - название поля, object - новое значение поля
+        {
+            // Находим локацию по ID
+            var user = await _db.Locations.FindAsync(id);
+            if (user == null)
+                return NotFound();
+
+            // Перебираем все поля для обновления
+            foreach (var update in updates)
+            {
+                // Ищем свойство в классе User по имени
+                var property = typeof(Location).GetProperty(
+                    update.Key,
+                    BindingFlags.IgnoreCase //игнорируем регистр
+                    | BindingFlags.Public //только публичные свойства
+                    | BindingFlags.Instance //не статические свойства
+                );
+
+                // Если свойство найдено, обновляем его значение
+                if (property != null)
+                    property.SetValue(user, //устанавливаем нвоое значение
+                        Convert.ChangeType(update.Value, property.PropertyType)); //меняем тип с obj на нужный
+
+            }
+
+            // Сохраняем изменения в БД
+            await _db.SaveChangesAsync();
+
+            var response = new UserResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Level = user.Level,
+                Icon = user.Icon,
+                VisitedLocation = user.VisitedLocations
+            };
+
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);
         }
     }
 }

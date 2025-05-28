@@ -23,5 +23,7 @@ namespace EkbCulture.AppHost.Models
 
         byte[] Icon { get; set; } //картинка хранится в виде массива байт
 
+        public void UpdateLevel() => Level = VisitedLocations.Length / 5;
+
     }
 }

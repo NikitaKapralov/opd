@@ -9,7 +9,16 @@ namespace EkbCulture.AppHost.Dtos
     public class UserResponseDto
     {
         public int Id { get; set; }
+
         public string Username { get; set; }
+
         public string Email { get; set; }
+
+        public int Level { get; set; }
+
+        public int[] VisitedLocations { get; set; }
+
+        byte[] Icon { get; set; }
+
     }
 }

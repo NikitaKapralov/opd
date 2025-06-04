@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EkbCulture.AppHost.Services;
 using EkbCulture.AppHost.Dtos;
+using System.Reflection;
 
 namespace EkbCulture.Controllers
 {
@@ -32,7 +33,7 @@ namespace EkbCulture.Controllers
                      Email = user.Email,
                      Level = user.Level,
                      Icon = user.Icon,
-                     VisitedLocation = user.VisitedLocations
+                     VisitedLocations = user.VisitedLocations
                  })
                  .ToListAsync();
             return Ok(users);
@@ -53,7 +54,7 @@ namespace EkbCulture.Controllers
                 Email = user.Email,
                 Level = user.Level,
                 Icon = user.Icon,
-                VisitedLocation = user.VisitedLocations
+                VisitedLocations = user.VisitedLocations
             };
             return Ok(response);
         }
@@ -89,7 +90,7 @@ namespace EkbCulture.Controllers
                     Email = user.Email,
                     Level = user.Level,
                     Icon = user.Icon,
-                    VisitedLocation = user.VisitedLocations
+                    VisitedLocations = user.VisitedLocations
                 };
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);
             }
@@ -114,12 +115,12 @@ namespace EkbCulture.Controllers
 
 
         //PATCH: api/users/{id}
-        [HttpPatch({"id"})]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeUserData(int id,
             [FromBody] Dictionary<string, object> updates) //где string - название поля, object - новое значение поля
         {
             // Находим локацию по ID
-            var user = await _db.Locations.FindAsync(id);
+            var user = await _db.Users.FindAsync(id);
             if (user == null)
                 return NotFound();
 
@@ -151,7 +152,7 @@ namespace EkbCulture.Controllers
                 Email = user.Email,
                 Level = user.Level,
                 Icon = user.Icon,
-                VisitedLocation = user.VisitedLocations
+                VisitedLocations = user.VisitedLocations
             };
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);

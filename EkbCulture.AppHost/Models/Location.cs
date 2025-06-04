@@ -26,7 +26,7 @@ namespace EkbCulture.AppHost.Models
 
         public double Rating { get; set; }
 
-        public Dictionary<User, int> RateByDict { get; set; }
+        //public Dictionary<User, int> RateByDict { get; set; }
 
         public int[] VisitedBy { get; set; }
 
@@ -36,17 +36,17 @@ namespace EkbCulture.AppHost.Models
 
         public byte[] ThirdImage { get; set; }
 
-        public void UpdateRating()
-        {
-            var sum = 0;
-            var rateByCount = 0;
-            foreach (var item in RateByDict)
-            {
-                sum += item.Value;
-                rateByCount++;
-            }
-            Rating = sum / rateByCount;
-        }
+    //    public void UpdateRating()
+      //  {
+        //    var sum = 0;
+        //    var rateByCount = 0;
+        //    foreach (var item in RateByDict)
+         //   {
+         //       sum += item.Value;
+        ///        rateByCount++;
+          //  }
+          //  Rating = sum / rateByCount;
+       // }
 
     }
 

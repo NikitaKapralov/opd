@@ -18,7 +18,7 @@ namespace EkbCulture.AppHost.Dtos
 
         public int[] VisitedLocations { get; set; }
 
-        byte[] Icon { get; set; }
+        public byte[] Icon { get; set; }
 
     }
 }

@@ -19,11 +19,12 @@ namespace EkbCulture.AppHost.Models
 
         public int Level { get; set; }
 
-        public int[] VisitedLocations { get; set; }
+        public int[] VisitedLocations { get; set; } = Array.Empty<int>();
 
-        public byte[] Icon { get; set; } //картинка хранится в виде массива байт
+        public string Icon { get; set; }
 
-        public void UpdateLevel() => Level = VisitedLocations.Length / 5 + 1;
+        public void UpdateLevel() =>
+        Level = (VisitedLocations?.Length ?? 0) / 5 + 1;
 
     }
 }

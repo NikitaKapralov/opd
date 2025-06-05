@@ -30,11 +30,11 @@ namespace EkbCulture.AppHost.Models
 
         public int[] VisitedBy { get; set; }
 
-        public byte[] FirstImage { get; set; }
+        public string FirstImage { get; set; }
 
-        public byte[] SecondImage { get; set; }
+        public string SecondImage { get; set; }
 
-        public byte[] ThirdImage { get; set; }
+        public string ThirdImage { get; set; }
 
     //    public void UpdateRating()
       //  {

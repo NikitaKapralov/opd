@@ -128,7 +128,7 @@ namespace EkbCulture.Controllers
             foreach (var update in updates)
             {
                 // Ищем свойство в классе User по имени
-                var property = typeof(Location).GetProperty(
+                var property = typeof(User).GetProperty(
                     update.Key,
                     BindingFlags.IgnoreCase //игнорируем регистр
                     | BindingFlags.Public //только публичные свойства

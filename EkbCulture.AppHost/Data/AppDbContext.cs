@@ -11,7 +11,20 @@ namespace EkbCulture.AppHost.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Пока оставляем пустым
+            // Конфигурация для массивов
+            modelBuilder.Entity<Location>()
+                .Property(l => l.VisitedBy)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray()
+                );
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.VisitedLocations)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray()
+                );
         }
     }
 }

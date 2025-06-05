@@ -58,6 +58,8 @@ namespace EkbCulture.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 _db.Locations.Add(location);
                 await _db.SaveChangesAsync();
                 return Ok(location);
@@ -110,7 +112,7 @@ namespace EkbCulture.Controllers
                 return NotFound();
             _db.Locations.Remove(location);
             await _db.SaveChangesAsync();
-            return Ok(id);
+            return NoContent(); //стандартный ответ при удалении
         }
     }
 }

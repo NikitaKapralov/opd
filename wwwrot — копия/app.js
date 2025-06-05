@@ -28,6 +28,31 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
   
+    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
 
+      const username = document.getElementById('login').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
 
-    
+      try {
+        const response = await fetch('https://localhost:17182/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert('Пользователь успешно создан!');
+          window.location.href = 'index2.html';
+        } else {
+          const errorData = await response.json();
+          alert('Ошибка: ' + (errorData.message || 'Не удалось создать пользователя'));
+        }
+      } catch (error) {
+        alert('Ошибка сети: ' + error.message);
+      }
+    });

@@ -1,84 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Регистрация</title>
-  <link rel="stylesheet" href="main1.css"> 
+  <link rel="stylesheet" href="main1.css" /> 
 </head>
 <body>
 
-<header>
-  <div class="header-logo">
-    <a href="C:\Users\User\wwwrot — копия\index.html">◆ EKBCulture</a> 
-  </div>
-</header>
+  <header>
+    <div class="header-logo">
+      <a href="C:\Users\User\wwwrot — копия\index.html">◆ EKBCulture</a> 
+    </div>
+  </header>
 
-<main>
-  <section class="registration-form">
-    <h1>Присоединяйтесь к сообществу EKBCulture</h1>
+  <main>
+    <section class="registration-form">
+      <h1>Присоединяйтесь к сообществу EKBCulture</h1>
 
-    <form id="registerForm">
-      <div class="form-group">
-        <label for="login">Логин</label>
-        <input type="text" id="login" name="login" placeholder="Напишите ваш логин" required>
-      </div>
+      <form id="registrationForm">
+        <div class="form-group">
+          <label for="login">Логин</label>
+          <input type="text" id="login" name="login" placeholder="Напишите ваш логин" required />
+        </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Введите ваш email" required>
-      </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Введите ваш email" required />
+        </div>
 
-      <div class="form-group">
-        <label for="password">Пароль</label>
-        <input type="password" id="password" name="password" placeholder="Придумайте сложный пароль" required>
-      </div>
+        <div class="form-group">
+          <label for="password">Пароль</label>
+          <input type="password" id="password" name="password" placeholder="Придумайте сложный пароль" required />
+        </div>
 
-      <button type="submit" class="register-button">Зарегистрироваться</button> 
-    </form>
+        <button type="submit" class="register-button">Зарегистрироваться</button>
+      </form>
 
-    <p id="error-message" style="color: red;"></p>
+      <p>У вас уже есть аккаунт? <a href="C:\Users\User\wwwrot — копия\index2.html">Войти</a></p>
+    </section>
+  </main>
 
-    <p>У вас уже есть аккаунт? <a href="C:\Users\User\wwwrot — копия\index2.html">Войти</a></p>
-  </section>
-</main>
+  <script>
+    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
 
-<script>
-async function registerUser(event) {
-  event.preventDefault();
-  const userData = {
-    username: document.getElementById('login').value,
-    email: document.getElementById('email').value,
-    password: document.getElementById('password').value,
-  };
+      const username = document.getElementById('login').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
 
-  try {
-    const response = await fetch('https://localhost:17182/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userData)
+      try {
+        const response = await fetch('https://localhost:17182/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert('Пользователь успешно создан!');
+          window.location.href = 'index2.html';
+        } else {
+          const errorData = await response.json();
+          alert('Ошибка: ' + (errorData.message || 'Не удалось создать пользователя'));
+        }
+      } catch (error) {
+        alert('Ошибка сети: ' + error.message);
+      }
     });
-    if (!response.ok) {
-      throw new Error(`HTTP ошибка! Код: ${response.status}`);
-    }
-    const result = await response.json();
-    console.log('Ответ сервера:', result);
-    document.getElementById('error-message').textContent = ''; 
-  } catch (error) {
-    console.error('Ошибка при регистрации пользователя:', error);
-    document.getElementById('error-message').textContent = error.message; 
-  }
-}
-
-registerUser({
-  username: 'string',
-  email: 'user@example.com',
-  password: 'string'
-});
-document.getElementById('registerForm').addEventListener('submit', registerUser);
-</script>
+  </script>
 
 </body>
 </html>

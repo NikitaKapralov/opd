@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using EkbCulture.AppHost.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +45,23 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated(); // Создаёт БД, если её нет
+    try
+    {
+        db.Database.EnsureCreated();
+        Console.WriteLine("База данных создана/проверена");
+
+        // Попробуйте добавить тестового пользователя
+        if (!db.Users.Any())
+        {
+            db.Users.Add(new User("test", "test@test.com", "test"));
+            db.SaveChanges();
+            Console.WriteLine("Тестовый пользователь добавлен");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ошибка БД: {ex.Message}");
+    }
 }
 
 app.Run();

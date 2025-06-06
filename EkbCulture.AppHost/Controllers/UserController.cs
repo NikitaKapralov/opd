@@ -66,18 +66,18 @@ namespace EkbCulture.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                    return BadRequest("Невалидная модель");
 
                 // Проверка уникальности
                 if (await _db.Users.AnyAsync(u => u.Email == userDto.Email))
                     return Conflict("Email уже занят");
 
                 var user = new User
-                {
-                    Username = userDto.Username,
-                    Email = userDto.Email,
-                    PasswordHash = PasswordHasherService.HashPassword(userDto.Password)
-                };
+                (
+                    userDto.Username,
+                    userDto.Email,
+                    PasswordHasherService.HashPassword(userDto.Password)
+                );
 
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
@@ -92,11 +92,24 @@ namespace EkbCulture.Controllers
                     Icon = user.Icon,
                     VisitedLocations = user.VisitedLocations
                 };
-                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Ошибка сервера");
+                //логирование
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+
+                return StatusCode(500, new
+                {
+                    message = "Ошибка сервера",
+                    error = ex.Message
+                });
             }
         }
 

@@ -97,3 +97,66 @@ body {
     color: #808080; 
   }
 
+
+body.light-theme {
+  background-color: #f8f9fa;
+  color: #343a40;
+}
+
+body.light-theme header {
+  background-color: #fff; 
+  color: #000; 
+}
+
+body.light-theme nav a {
+  color: #495057; 
+}
+
+body.light-theme .search-box {
+    background-color: #fff;
+}
+body.light-theme .search-box input{ 
+  color: #343a40;
+}
+
+body.light-theme .location-button{
+    background-color: #fff;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+body.dark-theme {
+  background-color: #333; 
+  color: #ffffff; 
+}
+
+body.dark-theme header .header-logo a {
+  color: #fff;
+  text-decoration: none;
+}
+
+body.dark-theme header {
+  background-color: #333; 
+  color: #fff; 
+}
+
+body.dark-theme nav a {
+  color: #fff;
+}
+body.dark-theme .search-box { 
+    background-color: #444; 
+}
+
+body.dark-theme .theme-button {
+  background-color: #333; 
+  color: #ffffff; 
+}
+body.dark-theme  .search-box input{ 
+  color: #eee; 
+}
+
+body.dark-theme .location-button{
+    background-color: #444;
+    color: #eee;
+    border: 1px solid #555;
+}

@@ -18,7 +18,7 @@ namespace EkbCulture.AppHost.Dtos
 
         public int[] VisitedLocations { get; set; } = Array.Empty<int>();
 
-        public string Icon { get; set; } = "";
+        public string? Icon { get; set; } = "";
 
     }
 }

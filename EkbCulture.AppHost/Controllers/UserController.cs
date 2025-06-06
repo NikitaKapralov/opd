@@ -59,6 +59,51 @@ namespace EkbCulture.Controllers
             return Ok(response);
         }
 
+        //GET: api/users/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new { message = "Невалидные данные", errors = ModelState.Values.SelectMany(v => v.Errors) });
+
+                // Поиск пользователя по логину
+                var user = await _db.Users
+                    .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+
+                if (user == null)
+                    return Unauthorized(new { message = "Пользователь не найден" });
+
+                // Проверка пароля
+                bool isPasswordValid = PasswordHasherService.VerifyPassword(
+                    loginDto.Password,
+                    user.PasswordHash
+                );
+
+                if (!isPasswordValid)
+                    return Unauthorized(new { message = "Неверный пароль" });
+
+                // Успешная авторизация - возвращаем основные данные
+                var response = new UserResponseDto
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Level = user.Level,
+                    VisitedLocations = user.VisitedLocations,
+                    Icon = user.Icon
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка авторизации: {ex.Message}");
+                return StatusCode(500, new { message = "Ошибка сервера", error = ex.Message });
+            }
+        }
+
         //POST api/users
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userDto)

@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Регистрация</title>
-  <link rel="stylesheet" href="main1.css">
-  <link rel="stylesheet" href="main2.css">
+  <link rel="stylesheet" href="main1.css" />
+  <link rel="stylesheet" href="main2.css" />
 </head>
 <body>
 
   <header>
     <div class="header-logo">
-    <a href="C:\Users\User\wwwrot — копия\index.html">◆ EKBCulture</a> 
+      <a href="C:\Users\User\wwwrot — копия\index.html">◆ EKBCulture</a>
     </div>
-</header>
+  </header>
 
   <main>
     <section class="registration-form">
       <h1>Вход</h1>
 
-      <form>
+      <form id="loginForm">
         <div class="form-group">
           <label for="login">Логин</label>
-          <input type="text" id="login" name="login" placeholder="Напишите ваш логин">
+          <input type="text" id="login" name="login" placeholder="Напишите ваш логин" required />
         </div>
 
         <div class="form-group">
           <label for="password">Пароль</label>
-          <input type="password" id="password" name="password" placeholder="Придумайте сложный пароль">
+          <input type="password" id="password" name="password" placeholder="Придумайте сложный пароль" required />
         </div>
 
-        <a href="C:\Users\User\wwwrot — копия\Index3.html" class="register">Войти</a> 
+        <button type="submit" class="register">Войти</button>
       </form>
 
       <p>Еще нет аккаунта? <a href="C:\Users\User\wwwrot — копия\index1.html">Регистрация</a></p>
     </section>
   </main>
 
+  <script src="app.js" defer></script>
 </body>
 </html>
-

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EkbCulture.AppHost.Models;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,24 +45,29 @@ app.MapControllers();
 // Проверка подключения к БД
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var services = scope.ServiceProvider;
     try
     {
-        db.Database.EnsureCreated();
-        Console.WriteLine("База данных создана/проверена");
+        var db = services.GetRequiredService<AppDbContext>();
 
-        // Попробуйте добавить тестового пользователя
+        // Применяем миграции автоматически
+        db.Database.Migrate();
+        Console.WriteLine("\nМИГРАЦИИ ПРИМЕНЕНЫ\n");
+
+        // Тестовые данные
         if (!db.Users.Any())
         {
             db.Users.Add(new User("test", "test@test.com", "test"));
             db.SaveChanges();
-            Console.WriteLine("Тестовый пользователь добавлен");
+            Console.WriteLine("\nТЕСТОВЫЙ ПОЛЬЗОВАТЕЛЬ ДОБАВЛЕН\n");
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Ошибка БД: {ex.Message}");
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "\nОШИБКА ПРИ ПРИМЕНЕНИИ МИГРАЦИЙ\n");
     }
 }
+
 
 app.Run();

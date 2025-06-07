@@ -11,19 +11,24 @@ namespace EkbCulture.AppHost.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Конфигурация для массивов
-            modelBuilder.Entity<Location>()
-                .Property(l => l.VisitedBy)
-                .HasConversion(
-                    v => string.Join(',', v),
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray()
-                );
-
+            // Конвертация int[] в строку для SQL
             modelBuilder.Entity<User>()
                 .Property(u => u.VisitedLocations)
                 .HasConversion(
                     v => string.Join(',', v),
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray()
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                          .Select(int.Parse)
+                          .ToArray()
+                );
+
+            // Аналогично для Location
+            modelBuilder.Entity<Location>()
+                .Property(l => l.VisitedBy)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                          .Select(int.Parse)
+                          .ToArray()
                 );
         }
     }

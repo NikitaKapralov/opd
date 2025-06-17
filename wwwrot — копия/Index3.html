@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,12 +7,87 @@
   <title>Екатеринбург</title>
   <link rel="stylesheet" href="main3.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    .profile-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%; 
+      object-fit: cover; 
+    }
+
+    .avatar-upload {
+      position: relative;
+      max-width: 200px;
+      margin: 20px auto; 
+    }
+
+    .avatar-upload .avatar-edit {
+      position: absolute;
+      right: 12px;
+      z-index: 1;
+      top: 10px;
+    }
+
+    .avatar-upload .avatar-edit input {
+      display: none;
+    }
+
+    .avatar-upload .avatar-edit label {
+      display: inline-block;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 0;
+      border-radius: 100%;
+      background: #FFFFFF;
+      border: 1px solid transparent;
+      box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.12);
+      cursor: pointer;
+      font-weight: normal;
+      transition: all .3s ease;
+    }
+
+    .avatar-upload .avatar-edit label:hover {
+      background: #f1f1f1;
+      border-color: #d2d2d2;
+    }
+
+    .avatar-upload .avatar-edit label:after {
+      content: "\f040"; 
+      font-family: FontAwesome;
+      color: #757575;
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      margin: auto;
+    }
+
+    .avatar-upload .avatar-preview {
+      width: 192px;
+      height: 192px;
+      position: relative;
+      border-radius: 100%;
+      border: 6px solid #F8F8F8;
+      box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
+    }
+
+    .avatar-upload .avatar-preview > div {
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+  </style>
 </head>
 <body>
 
   <header>
     <div class="header-logo">
-      <a href="index.html">◆ EKBCulture</a> 
+      <a href="index.html">◆ EKBCulture</a>
     </div>
     <nav>
       <a href="index.html">Главная</a>
@@ -20,12 +96,11 @@
       <a href="index4.html">История</a>
     </nav>
     <button id="themeToggle" class="theme-button">
-      <i class="fa fa-adjust"></i> Переключить тему
-    </button>
+      <i class="fa fa-adjust"></i> Переключить тему    </button>
     <div class="header-actions">
       <a href="#">
-        <img src="123.png" alt="Профиль" class="profile-image">
-      </a>      
+        <img src="123.png" alt="Профиль" class="profile-image" id="header-avatar">
+      </a>
     </div>
   </header>
 
@@ -33,10 +108,16 @@
     <section class="registration-form">
       <h1>Профиль</h1>
       <h2>Информация о пользователе</h2>
-      <div class="actions">
-        <a href="index1.html">
-          <img src="123.png" alt="Профиль" class="profile-image">
-        </a>      
+
+      <div class="avatar-upload">
+          <div class="avatar-edit">
+              <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+              <label for="imageUpload"></label>
+          </div>
+          <div class="avatar-preview">
+              <div id="imagePreview" style="background-image: url(123.png);">
+              </div>
+          </div>
       </div>
 
       <form>
@@ -77,5 +158,34 @@
     </section>
   </main>
   <script src="app.js"></script>
+  <script>
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            let imageDataURL = e.target.result; 
+
+            document.getElementById('imagePreview').style.backgroundImage = 'url('+ imageDataURL +')';
+            document.getElementById('header-avatar').src = imageDataURL;
+
+            localStorage.setItem('avatar', imageDataURL);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+document.getElementById("imageUpload").addEventListener('change', function() {
+    readURL(this);
+});
+
+window.onload = function() {
+    let savedAvatar = localStorage.getItem('avatar');
+    if (savedAvatar) {
+        document.getElementById('imagePreview').style.backgroundImage = 'url('+ savedAvatar +')';
+        document.getElementById('header-avatar').src = savedAvatar;
+    }
+};
+
+  </script>
 </body>
 </html>

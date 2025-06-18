@@ -115,10 +115,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   let selectedFile = null;
 
+  // Загружаем аватар из localStorage при загрузке страницы
   const savedAvatarUrl = localStorage.getItem('avatarUrl');
   if (savedAvatarUrl) {
     profileAvatar.src = savedAvatarUrl;
     if (headerAvatar) headerAvatar.src = savedAvatarUrl;
+  } else {
+    // Устанавливаем дефолтный аватар, если в localStorage ничего нет
+    profileAvatar.src = '123.png';
+    if (headerAvatar) headerAvatar.src = '123.png';
   }
 
   changeAvatarBtn.addEventListener('click', () => {
@@ -131,7 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const reader = new FileReader();
       
       reader.onload = (e) => {
+        // Показываем превью выбранного изображения
         profileAvatar.src = e.target.result;
+        if (headerAvatar) headerAvatar.src = e.target.result;
       };
       
       reader.readAsDataURL(selectedFile);
@@ -153,15 +160,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const result = await updateAvatar(userId, selectedFile);
         
-        const newAvatarUrl = result.avatarUrl;
-        
-        profileAvatar.src = newAvatarUrl;
-        if (headerAvatar) headerAvatar.src = newAvatarUrl;
-        localStorage.setItem('avatarUrl', newAvatarUrl);
-        
-        alert('Аватар успешно обновлен!');
+        if (result && result.avatarUrl) {
+          // Обновляем аватар на странице
+          profileAvatar.src = result.avatarUrl;
+          if (headerAvatar) headerAvatar.src = result.avatarUrl;
+          
+          // Сохраняем URL аватара в localStorage
+          localStorage.setItem('avatarUrl', result.avatarUrl);
+          
+          alert('Аватар успешно обновлен!');
+        } else {
+          alert('Не удалось получить новый URL аватара от сервера');
+        }
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('Ошибка при обновлении аватара:', error);
         alert('Произошла ошибка при обновлении аватара: ' + error.message);
       } finally {
         resetAvatarButtons();
@@ -170,8 +182,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   cancelAvatarBtn.addEventListener('click', () => {
-    const savedAvatar = localStorage.getItem('avatarUrl');
-    profileAvatar.src = savedAvatar || '123.png';
+    // Возвращаем сохраненный аватар или дефолтный
+    const savedAvatarUrl = localStorage.getItem('avatarUrl');
+    profileAvatar.src = savedAvatarUrl || '123.png';
+    if (headerAvatar) headerAvatar.src = savedAvatarUrl || '123.png';
     resetAvatarButtons();
   });
 
@@ -182,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
     selectedFile = null;
     avatarInput.value = '';
   }
+
 
   document.getElementById('saveChangesBtn').addEventListener('click', () => {
     alert('Изменения сохранены!');

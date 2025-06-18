@@ -115,13 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
   
   let selectedFile = null;
 
-  // Загружаем аватар из localStorage при загрузке страницы
   const savedAvatarUrl = localStorage.getItem('avatarUrl');
   if (savedAvatarUrl) {
     profileAvatar.src = savedAvatarUrl;
     if (headerAvatar) headerAvatar.src = savedAvatarUrl;
   } else {
-    // Устанавливаем дефолтный аватар, если в localStorage ничего нет
     profileAvatar.src = '123.png';
     if (headerAvatar) headerAvatar.src = '123.png';
   }
@@ -136,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const reader = new FileReader();
       
       reader.onload = (e) => {
-        // Показываем превью выбранного изображения
         profileAvatar.src = e.target.result;
         if (headerAvatar) headerAvatar.src = e.target.result;
       };
@@ -161,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const result = await updateAvatar(userId, selectedFile);
         
         if (result && result.avatarUrl) {
-          // Обновляем аватар на странице
           profileAvatar.src = result.avatarUrl;
           if (headerAvatar) headerAvatar.src = result.avatarUrl;
           
@@ -182,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   cancelAvatarBtn.addEventListener('click', () => {
-    // Возвращаем сохраненный аватар или дефолтный
     const savedAvatarUrl = localStorage.getItem('avatarUrl');
     profileAvatar.src = savedAvatarUrl || '123.png';
     if (headerAvatar) headerAvatar.src = savedAvatarUrl || '123.png';

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Рейтинг - Екатеринбург</title>
+  <link rel="stylesheet" href="main5.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <div class="header-logo">
+      <a href="index.html">◆ EKBCulture</a>
+    </div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="index5.html">Рейтинг</a>
+      <a href="index6.html">Места</a>
+      <a href="index4.html">История</a>
+    </nav>
+    <button id="themeToggle" class="theme-button">
+      <i class="fa fa-adjust"></i> Переключить тему
+    </button>
+    <div class="header-actions">
+      <a href="index3.html">
+        <img src="123.png" alt="Профиль" class="profile-image" style="width:40px; height:40px; object-fit: cover; border-radius: 50%;" />
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="registration-form">
+      <h1>Ваши баллы и рейтинг</h1>
+      <div class="user-stats">
+        <div id="currentUserStats" class="current-user">
+          <!-- Текущий пользователь -->
+        </div>
+      </div>
+      <h2>Таблица лидеров</h2>
+      <div id="leaderboard" class="leaderboard">
+        <!-- Таблица рейтинга -->
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formData = new FormData();
     formData.append('avatarFile', file);
     
-    const response = await fetch(`/api/users/${userId}/avatar`, {
+    const response = await fetch(`https://localhost:17182/api/users/${userId}/avatar`, {
       method: 'PATCH',
       body: formData
     });
@@ -153,23 +153,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const result = await updateAvatar(userId, selectedFile);
         
-        if (result.success) {
-          const newAvatarUrl = result.avatarUrl || URL.createObjectURL(selectedFile);
-          profileAvatar.src = newAvatarUrl;
-          if (headerAvatar) headerAvatar.src = newAvatarUrl;
-          localStorage.setItem('avatarUrl', newAvatarUrl);
-          
-          alert('Аватар успешно обновлен!');
-        } else {
-          alert('Ошибка при обновлении аватара');
-        }
+        const newAvatarUrl = result.avatarUrl;
+        
+        profileAvatar.src = newAvatarUrl;
+        if (headerAvatar) headerAvatar.src = newAvatarUrl;
+        localStorage.setItem('avatarUrl', newAvatarUrl);
+        
+        alert('Аватар успешно обновлен!');
       } catch (error) {
         console.error('Ошибка:', error);
-        alert('Произошла ошибка при обновлении аватара');
+        alert('Произошла ошибка при обновлении аватара: ' + error.message);
+      } finally {
+        resetAvatarButtons();
       }
     }
-    
-    resetAvatarButtons();
   });
 
   cancelAvatarBtn.addEventListener('click', () => {

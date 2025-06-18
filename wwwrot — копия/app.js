@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-const themeToggle = document.getElementById('themeToggle');
+  const themeToggle = document.getElementById('themeToggle');
 
   if (themeToggle) {
     themeToggle.addEventListener('click', function() {
@@ -46,6 +46,12 @@ const themeToggle = document.getElementById('themeToggle');
 
         if (response.ok) {
           const data = await response.json();
+          localStorage.setItem('currentUserId', data.id);
+          localStorage.setItem('username', data.username);
+          if (data.avatarUrl) {
+            localStorage.setItem('avatarUrl', data.avatarUrl);
+          }
+          
           alert('Вход выполнен успешно!');
           window.location.href = 'index3.html'; 
         } else {
@@ -57,7 +63,6 @@ const themeToggle = document.getElementById('themeToggle');
       }
     });
   }
-
 
   const registrationForm = document.getElementById('registrationForm');
   if (registrationForm) {
@@ -89,83 +94,99 @@ const themeToggle = document.getElementById('themeToggle');
     });
   }
   
-    async function updateAvatar(userId, file) {
-      const formData = new FormData();
-      formData.append('avatarFile', file);
-      
-      const response = await fetch(`/api/users/${userId}/avatar`, {
-          method: 'PATCH',
-          body: formData
-      });
-      
-      return response.json();
-    }
-
-    const avatarInput = document.getElementById('avatarInput');
-    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
-    const saveAvatarBtn = document.getElementById('saveAvatarBtn');
-    const cancelAvatarBtn = document.getElementById('cancelAvatarBtn');
-    const profileAvatar = document.getElementById('profileAvatar');
-    const headerAvatar = document.getElementById('headerAvatar');
+  async function updateAvatar(userId, file) {
+    const formData = new FormData();
+    formData.append('avatarFile', file);
     
-    let selectedFile = null;
-
-    changeAvatarBtn.addEventListener('click', () => {
-      avatarInput.click();
+    const response = await fetch(`/api/users/${userId}/avatar`, {
+      method: 'PATCH',
+      body: formData
     });
+    
+    return response.json();
+  }
 
-    avatarInput.addEventListener('change', (event) => {
-      if (event.target.files && event.target.files[0]) {
-        selectedFile = event.target.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-          profileAvatar.src = e.target.result;
-        };
-        
-        reader.readAsDataURL(selectedFile);
-        
-        changeAvatarBtn.style.display = 'none';
-        saveAvatarBtn.style.display = 'inline-block';
-        cancelAvatarBtn.style.display = 'inline-block';
-      }
-    });
+  const avatarInput = document.getElementById('avatarInput');
+  const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+  const saveAvatarBtn = document.getElementById('saveAvatarBtn');
+  const cancelAvatarBtn = document.getElementById('cancelAvatarBtn');
+  const profileAvatar = document.getElementById('profileAvatar');
+  const headerAvatar = document.getElementById('headerAvatar');
+  
+  let selectedFile = null;
 
-    saveAvatarBtn.addEventListener('click', async () => {
-      if (selectedFile) {
-        try {
-          const userId = 1; 
-          const result = await updateAvatar(userId, selectedFile);
-          
-          if (result.success) {
-            headerAvatar.src = profileAvatar.src;
-            alert('Аватар успешно обновлен!');
-          } else {
-            alert('Ошибка при обновлении аватара');
-          }
-        } catch (error) {
-          console.error('Ошибка:', error);
-          alert('Произошла ошибка при обновлении аватара');
-        }
-      }
+  const savedAvatarUrl = localStorage.getItem('avatarUrl');
+  if (savedAvatarUrl) {
+    profileAvatar.src = savedAvatarUrl;
+    if (headerAvatar) headerAvatar.src = savedAvatarUrl;
+  }
+
+  changeAvatarBtn.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', (event) => {
+    if (event.target.files && event.target.files[0]) {
+      selectedFile = event.target.files[0];
+      const reader = new FileReader();
       
-      resetAvatarButtons();
-    });
-
-    cancelAvatarBtn.addEventListener('click', () => {
-      profileAvatar.src = '123.png';
-      resetAvatarButtons();
-    });
-
-    function resetAvatarButtons() {
-      changeAvatarBtn.style.display = 'inline-block';
-      saveAvatarBtn.style.display = 'none';
-      cancelAvatarBtn.style.display = 'none';
-      selectedFile = null;
-      avatarInput.value = '';
+      reader.onload = (e) => {
+        profileAvatar.src = e.target.result;
+      };
+      
+      reader.readAsDataURL(selectedFile);
+      
+      changeAvatarBtn.style.display = 'none';
+      saveAvatarBtn.style.display = 'inline-block';
+      cancelAvatarBtn.style.display = 'inline-block';
     }
+  });
 
-    document.getElementById('saveChangesBtn').addEventListener('click', () => {
-      alert('Изменения сохранены!');
-    });
+  saveAvatarBtn.addEventListener('click', async () => {
+    if (selectedFile) {
+      try {
+        const userId = localStorage.getItem('currentUserId');
+        if (!userId) {
+          alert('Пользователь не авторизован');
+          return;
+        }
+        
+        const result = await updateAvatar(userId, selectedFile);
+        
+        if (result.success) {
+          const newAvatarUrl = result.avatarUrl || URL.createObjectURL(selectedFile);
+          profileAvatar.src = newAvatarUrl;
+          if (headerAvatar) headerAvatar.src = newAvatarUrl;
+          localStorage.setItem('avatarUrl', newAvatarUrl);
+          
+          alert('Аватар успешно обновлен!');
+        } else {
+          alert('Ошибка при обновлении аватара');
+        }
+      } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Произошла ошибка при обновлении аватара');
+      }
+    }
+    
+    resetAvatarButtons();
+  });
+
+  cancelAvatarBtn.addEventListener('click', () => {
+    const savedAvatar = localStorage.getItem('avatarUrl');
+    profileAvatar.src = savedAvatar || '123.png';
+    resetAvatarButtons();
+  });
+
+  function resetAvatarButtons() {
+    changeAvatarBtn.style.display = 'inline-block';
+    saveAvatarBtn.style.display = 'none';
+    cancelAvatarBtn.style.display = 'none';
+    selectedFile = null;
+    avatarInput.value = '';
+  }
+
+  document.getElementById('saveChangesBtn').addEventListener('click', () => {
+    alert('Изменения сохранены!');
+  });
 });

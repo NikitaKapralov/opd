@@ -211,7 +211,7 @@ namespace EkbCulture.Controllers
                 Username = user.Username,
                 Email = user.Email,
                 Level = user.Level,
-                Icon = user.Icon,
+                Icon = user.IconUrl,
                 VisitedLocations = user.VisitedLocations
             };
 
@@ -244,13 +244,13 @@ namespace EkbCulture.Controllers
             }
 
             // Обновляем URL аватара
-            user.Icon = $"/avatars/{fileName}";
+            user.IconUrl = $"/avatars/{fileName}";
             await _db.SaveChangesAsync();
 
             return Ok(new
             {
                 message = "Аватар обновлён",
-                avatarUrl = user.Icon
+                avatarUrl = user.IconUrl
             });
         }
 

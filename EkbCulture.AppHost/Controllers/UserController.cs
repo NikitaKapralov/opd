@@ -220,13 +220,18 @@ namespace EkbCulture.Controllers
 
         //Добавление/обновление аватара
         [HttpPatch("{id}/avatar")]
-        public async Task<IActionResult> UpdateAvatar(int id, IFormFile avatarFile)
+        public async Task<IActionResult> UpdateAvatar(int id, [FromForm] IFormFile avatarFile)
         {
+            Console.WriteLine($"Запрос на обновление аватара для пользователя {id}");
+
             var user = await _db.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            if (user == null) return NotFound("Не найден пользователь!!!");
 
             if (avatarFile == null || avatarFile.Length == 0)
-                return BadRequest("Файл не предоставлен");
+            {
+                Console.WriteLine("Файл не предоставлен");
+                return BadRequest(new { message = "Файл не предоставлен" });
+            }
 
             // Создаем папку для аватарок, если её нет
             var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars");
@@ -324,6 +329,65 @@ namespace EkbCulture.Controllers
                 message = "Email обновлён",
                 newEmail = user.Email
             });
+        }
+
+        [HttpPatch("{id}/password")]
+        public async Task<IActionResult> UpdatePassword(int id, [FromBody] ChangePasswordDto passwordDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new
+                    {
+                        message = "Ошибка валидации",
+                        errors = errors
+                    });
+                }
+
+                var user = await _db.Users.FindAsync(id);
+                if (user == null)
+                    return NotFound(new { message = "Пользователь не найден" });
+
+                // Проверяем текущий пароль
+                bool isCurrentPasswordValid = PasswordHasherService.VerifyPassword(
+                    passwordDto.CurrentPassword,
+                    user.PasswordHash
+                );
+
+                if (!isCurrentPasswordValid)
+                    return Unauthorized(new { message = "Неверный текущий пароль" });
+
+                // Проверяем, что новый пароль отличается от старого
+                if (PasswordHasherService.VerifyPassword(passwordDto.NewPassword, user.PasswordHash))
+                    return BadRequest(new { message = "Новый пароль должен отличаться от старого" });
+
+                // Обновляем пароль
+                user.PasswordHash = PasswordHasherService.HashPassword(passwordDto.NewPassword);
+                await _db.SaveChangesAsync();
+
+                return Ok(new { message = "Пароль успешно обновлен" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при обновлении пароля: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Ошибка: {ex.InnerException.Message}");
+                }
+
+                return StatusCode(500, new
+                {
+                    message = "Ошибка сервера при обновлении пароля",
+                    error = ex.Message
+                });
+            }
         }
     }
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Екатеринбург</title>
+  <link rel="stylesheet" href="main5.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <div class="header-logo">
+      <a href="index.html">◆ EKBCulture</a>
+    </div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="index5.html">Рейтинг</a>
+      <a href="index6.html">Места</a>
+      <a href="index4.html">История</a>
+    </nav>
+    <button id="themeToggle" class="theme-button">
+      <i class="fa fa-adjust"></i> Переключить тему
+    </button>
+    <div class="header-actions">
+      <a href="index3.html">
+        <img src="123.png" alt="Профиль" class="profile-image" style="width:40px; height:40px; object-fit: cover; border-radius: 50%;" />
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="registration-form">
+      <h1>Ваши баллы и рейтинг</h1>
+      <h2>Таблица лидеров</h2>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const avatarSrc = localStorage.getItem('profileAvatar');
+      if (avatarSrc) {
+        const profileImg = document.querySelector('.profile-image');
+        if (profileImg) profileImg.src = avatarSrc;
+      }
+    });
+    
+  </script>
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const avatarInput = document.getElementById('avatar');
+  const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+  const profileImages = document.querySelectorAll('.profile-image');
+
+  const savedAvatar = localStorage.getItem('userAvatar');
+  if (savedAvatar) {
+    profileImages.forEach(img => img.src = savedAvatar);
+  }
+
+  changeAvatarBtn.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите файл изображения');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const base64Image = e.target.result;
+      localStorage.setItem('userAvatar', base64Image);
+      profileImages.forEach(img => img.src = base64Image);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+</script>  <script src="app.js"></script>
+</body>
+</html>

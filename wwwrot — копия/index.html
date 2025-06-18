@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Екатеринбург</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <a href="index.html">◆ EKBCulture</a> 
+  </div>
+  <nav>
+    <a href="index.html">Главная</a>
+    <a href="index5.html">Рейтинг</a>
+    <a href="index6.html">Места</a>
+    <a href="index4.html">История</a>
+  </nav>
+  <button id="themeToggle" class="theme-button">
+    <i class="fa fa-adjust"></i> Переключить тему
+  </button>
+  <div class="header-actions">
+    <a href="index1.html">
+      <img src="123.png" alt="Профиль" class="profile-image" style="width:40px; height:40px; object-fit: cover; border-radius: 50%;" />
+    </a>      
+  </div>
+</header>
+
+  <form class="search-container" id="search-form">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Екатеринбург, Россия" name="search">
+      <button type="reset" id="clear-search" class="clear-button">
+        <i class="fas fa-times-circle"></i>
+      </button>
+      <button type="submit" class="search-button">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </form>
+
+
+  <div id="map" style="height: 500px;"></div>
+  
+  <script>
+    var map = L.map('map').setView([56.8389, 60.6057], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var markersData = [
+      {
+        title: "Дом Н. И. Севастьянова",
+        description: "Исторический и архитектурный памятник, расположенный в Екатеринбурге...",
+        coords: [56.839138, 60.606158],
+        popupContent: `          <b>Дом Н. И. Севастьянова</b><br>
+          Екатеринбург, просп. Ленина, 35<br>
+          <img src="unnamed.jpg" alt="Дом Н. И. Севастьянова" style="width: 200px; height: auto;"><br>
+          Исторический и архитектурный памятник, расположенный в Екатеринбурге по адресу проспект Ленина, 35. Назван в честь одного из владельцев здания Николая Севастьянова. Одна из местных достопримечательностей, архитектура которой особо выделяется среди особняков города.
+        `
+      },
+      {
+        title: "Плотинка",
+        description: "Плотинка - это исторический гидротехнический комплекс и одно из старейших сооружений города...",
+        coords: [56.837963, 60.603556],
+        popupContent: `
+          <b>Плотинка</b><br>
+          просп. Ленина, Екатеринбург, Свердловская обл., 620014<br>
+          <img src="unnamed (1).jpg" alt="Плотинка" style="width: 200px; height: auto;"><br>
+          Плотинка - это исторический гидротехнический комплекс и одно из старейших сооружений города. Она является сердцем Екатеринбурга и его символом.
+        `
+      },
+      {
+        title: "Храм-на-Крови",
+        description:
+          "Храм на Крови в Екатеринбурге — это русский православный храм, построенный на месте Ипатьевского дома...",
+        coords: [56.844402, 60.609081],
+        popupContent: `
+          <b>Храм-на-Крови</b><br>
+          ул. Царская, 10, Екатеринбург, Свердловская обл., 620075<br>
+          <img src="unnamed (2).jpg" alt="Храм-на-Крови" style="width: 200px; height: auto;"><br>
+          Храм на Крови в Екатеринбурге — это русский православный храм, построенный на месте Ипатьевского дома, где в ночь с 16 на 17 июля 1918 года была расстреляна царская семья: последний российский император Николай II, его жена Александра Федоровна, их дети — великие княжны Ольга, Татьяна, Мария, Анастасия и цесаревич Алексей, а также их приближенные.
+        `,
+      },
+      {
+        title: "Ельцин Центр",
+        description:
+          "Ельцин Центр - это общественно-политический и культурный центр, расположенный в Екатеринбурге...",
+        coords: [56.844894, 60.591438],
+        popupContent: `
+          <b>Ельцин Центр</b><br>
+          ул. Бориса Ельцина, 3, Екатеринбург, Свердловская обл., 620014<br>
+          <img src="photo_2023-09-24_20-46-29.jpg" alt="Ельцин Центр" style="width: 200px; height: auto;"><br>
+          Ельцин Центр - это общественно-политический и культурный центр, расположенный в Екатеринбурге. Он посвящён первому президенту России Борису Николаевичу Ельцину и периоду его правления.
+        `,
+      },
+      
+      {
+        title: "Смотровая площадка БЦ «Высоцкий»",
+        description:
+          "Главная смотровая площадка Екатеринбурга, расположена на 52‑м этаже бизнес‑центра...",
+        coords: [56.836106, 60.61465],
+        popupContent: `
+          <b>Смотровая площадка БЦ «Высоцкий»</b><br>
+          ул. Малышева, 51, Екатеринбург, Свердловская обл., 620075<br>
+          <img src="619fe999-ef57-4361-8643-a006e0fb78d7.jpg" alt="БЦ «Высоцкий»" style="width: 200px; height: auto;"><br>
+          Главная смотровая площадка Екатеринбурга, куда поднимаются не только за классными видами. Она находится на 52‑м этаже бизнес‑центра, на высоте 186 метров. В хорошую погоду отсюда видно километров на 25 вдаль, и можно рассмотреть почти все знаковые до­сто­при­ме­ча­тель­но­сти Екатеринбурга — такое вот экспресс‑знакомство с городом за несколько минут.
+        `,
+      },
+      {
+        title: "Водонапорная башня на Плотинке",
+        description:
+          "Двухэтажная башня построена в начале 1890‑х, сегодня музей с интересными экспозициями...",
+        coords: [56.837883, 60.605514],
+        popupContent: `
+          <b>Водонапорная башня на Плотинке</b><br>
+          ул. Горького, 4В, Екатеринбург, Свердловская обл., 620075<br>
+          <img src="2021-02-11.jpg" alt="Водонапорная башня на Плотинке" style="width: 200px; height: auto;"><br>
+          Место с неплохой видовой точкой и интересным содержимым. Двухэтажная башня была построена в начале 1890‑х, а после Великой Отечественной войны была даже домом для нескольких семей.Сегодня внутри музей, куда стоит приходить послушать голоса жителей башни (в записи) и от души нафотографироваться с видом на Плотинку — на старинной лестнице снаружи, по которой посетители поднимаются на второй этаж. Высота здесь, конечно, небольшая, зато снимки получаются оригинальные.
+        `,
+      },
+      {
+        title: "Колесо обозрения в «Радуга‑парке»",
+        description:
+          "Самое большое колесо обозрения в Екатеринбурге, высотой 50 метров с закрытыми кабинками...",
+        coords: [56.815144, 60.540572],
+        popupContent: `
+          <b>Колесо обозрения в «Радуга‑парке»</b><br>
+          ул. Репина, 94, Екатеринбург, Свердловская обл., 620043<br>
+          <img src="4a002e42-662e-4c00-8745-385387d19b22.jpg" alt="Колесо обозрения в «Радуга‑парке»" style="width: 200px; height: auto;"><br>
+          Аттракцион и обзорная площадка одновременно. Расположено оно на территории парка ТРЦ «Радуга‑парк». Это самое большое колесо обозрения в Екатеринбурге (50 метров высотой) с закрытыми кабинками и уникальным расположением. Оно установлено на естественной скале, а рядом с ней — небольшой пруд, который зимой превращается в каток.
+        `,
+      },
+      {
+        title: "Колесо обозрения в ЦПКиО имени Маяковского",
+        description:
+          "Колесо обозрения высотой 35 метров с видом на зелёный массив и реку Исеть...",
+        coords: [56.8145, 60.636573],
+        popupContent: `
+          <b>Колесо обозрения в ЦПКиО имени Маяковского</b><br>
+          улица Мичурина, 230, Екатеринбург, Свердловская область, 620100<br>
+          <img src="519b2c5b-3314-4792-8154-257f9f92a77d.jpg" alt="Колесо обозрения в ЦПКиО имени Маяковского" style="width: 200px; height: auto;"><br>
+          Оно чуть ниже своего соседа в «Радуга‑парке» — всего 35 метров в высоту. Но вид сверху тоже неплохой: большой зелёный массив и извилистая лента реки Исети. Один круг занимает примерно девять минут, поэтому времени хватит, чтобы хорошенько всё рассмотреть.
+        `,
+      },
+      {
+        title: "Арка Покраса Лампаса",
+        description:
+          "All your walls are belong to us — «Все ваши стены принадлежат нам»",
+        coords: [56.838218, 60.610293],
+        popupContent: `
+          <b>Арка Покраса Лампаса</b><br>
+          ул. Толмачева, 12, Екатеринбург, Свердловская обл., 620075<br>
+          <img src="DSC_6216.jpg" alt="Арка Покраса Лампаса" style="width: 200px; height: auto;"><br>
+        All your walls are belong to us — «Все ваши стены принадлежат нам» — именно эту фразу известный петербургский художник-каллиграф зашил среди тысячи тегов, которыми расписал стену. Но с ходу надпись не разглядеть. Зашифрованное сообщение появляется только при свете ультрафиолетовой лампы.
+        `,
+      },
+      {
+        title: "We are not alone",
+        description:
+          "Организаторы «Стенограффия» называют лондонского художника Fanakapan самым загадочным и космическим участником фестиваля. ",
+        coords: [56.834952, 60.591152],
+        popupContent: `
+          <b>We are not alone</b><br>
+          ул. ​Попова 9/16, ​Хохрякова, 16, Екатеринбург, Свердловская обл., 620014<br>
+          <img src="orig.jpg" alt="We are not alone" style="width: 200px; height: auto;"><br>
+        Организаторы «Стенограффии» называют лондонского художника Fanakapan самым загадочным и космическим участником фестиваля. Вдохновившись советскими елочными игрушками, он изобразил на фасаде здания космонавта в компании инопланетянина. Мурал выполнен в реалистичном 3D-стиле.
+        `,
+      },
+      {
+        title: "Парк усадьбы Харитоновых-Расторгуевых",
+        description:
+          "Парк усадьбы Харитоновых-Расторгуевых – это исторический парк в Екатеринбурге, примыкающий к архитектурному комплексу усадьбы Харитоновых-Расторгуевых ",
+        coords: [56.8458, 60.6133],
+        popupContent: `
+          <b>Парк усадьбы Харитоновых-Расторгуевых</b><br>
+          ул. ​Попова 9/16, ​Хохрякова, 16, Екатеринбург, Свердловская обл., 620014<br>
+          <img src="original.jpg" alt="We are not alone" style="width: 200px; height: auto;"><br>
+        Парк усадьбы Харитоновых-Расторгуевых – это исторический парк в Екатеринбурге, примыкающий к архитектурному комплексу усадьбы Харитоновых-Расторгуевых (сейчас в нём располагается Дворец детского и юношеского творчества).
+        `,
+      },
+    ];
+
+    var markers = markersData.map(function(data) {
+      var marker = L.marker(data.coords).addTo(map);
+      marker.bindPopup(data.popupContent);
+      data.marker = marker; 
+      return marker;
+    });
+
+    function filterMarkers(query) {
+      var lowerQuery = query.toLowerCase();
+
+      markersData.forEach(function(data) {
+        var text = (data.title + " " + data.description).toLowerCase();
+        if (text.includes(lowerQuery)) {
+          if (!map.hasLayer(data.marker)) {
+            data.marker.addTo(map);
+          }
+        } else {
+          if (map.hasLayer(data.marker)) {
+            map.removeLayer(data.marker);
+          }
+        }
+      });
+    }
+
+    document.getElementById('search-form').addEventListener('submit', function(e) {
+      e.preventDefault(); 
+      var query = document.getElementById('search-input').value.trim();
+      if (query === "") {
+        markersData.forEach(function(data) {
+          if (!map.hasLayer(data.marker)) {
+            data.marker.addTo(map);
+          }
+        });
+      } else {
+        filterMarkers(query);
+      }
+    });
+
+    document.getElementById('clear-search').addEventListener('click', function() {
+      document.getElementById('search-input').value = '';
+      markersData.forEach(function(data) {
+        if (!map.hasLayer(data.marker)) {
+          data.marker.addTo(map);
+        }
+      });
+    });
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const avatarInput = document.getElementById('avatar');
+  const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+  const profileImages = document.querySelectorAll('.profile-image');
+
+  const savedAvatar = localStorage.getItem('userAvatar');
+  if (savedAvatar) {
+    profileImages.forEach(img => img.src = savedAvatar);
+  }
+
+  changeAvatarBtn.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите файл изображения');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const base64Image = e.target.result;
+      localStorage.setItem('userAvatar', base64Image);
+      profileImages.forEach(img => img.src = base64Image);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+</script>
+  <script src="app.js"></script>
+</body>
+</html>

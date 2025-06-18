@@ -163,7 +163,6 @@ function updateAuthUI() {
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
 
-    // Валидация полей
     if (!oldPassword || !newPassword || !confirmPassword) {
       alert('Все поля должны быть заполнены');
       return;
@@ -194,7 +193,6 @@ function updateAuthUI() {
 
       if (response.ok) {
         alert('Пароль успешно изменён');
-        // Очищаем поля после успешного изменения
         document.getElementById('old-password').value = '';
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-password').value = '';

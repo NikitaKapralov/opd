@@ -220,10 +220,11 @@ namespace EkbCulture.Controllers
 
         //Добавление/обновление аватара
         [HttpPatch("{id}/avatar")]
-        public async Task<IActionResult> UpdateAvatar(int id, [FromForm] IFormFile avatarFile)
+        public async Task<IActionResult> UpdateAvatar(int id)
         {
-            Console.WriteLine($"Запрос на обновление аватара для пользователя {id}");
 
+            Console.WriteLine($"Запрос на обновление аватара для пользователя {id}");
+            var avatarFile = Request.Form.Files.FirstOrDefault();
             var user = await _db.Users.FindAsync(id);
             if (user == null) return NotFound("Не найден пользователь!!!");
 
@@ -388,6 +389,6 @@ namespace EkbCulture.Controllers
                     error = ex.Message
                 });
             }
-        }
+        } 
     }
 }

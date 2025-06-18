@@ -61,7 +61,7 @@ using (var scope = app.Services.CreateScope())
             db.SaveChanges();
             Console.WriteLine("\nреярнбши онкэгнбюрекэ днаюбкем\n");
         }
-        Console.WriteLine("\nаюгю дюммшу пюанрюер аег ньханй\n")
+        Console.WriteLine("\nаюгю дюммшу пюанрюер аег ньханй\n");
     }
     catch (Exception ex)
     {

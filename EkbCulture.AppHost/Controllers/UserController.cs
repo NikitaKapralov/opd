@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using EkbCulture.AppHost.Services;
 using EkbCulture.AppHost.Dtos;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace EkbCulture.Controllers
 {
@@ -32,7 +34,7 @@ namespace EkbCulture.Controllers
                      Username = user.Username,
                      Email = user.Email,
                      Level = user.Level,
-                     Icon = user.Icon,
+                     Icon = user.IconUrl,
                      VisitedLocations = user.VisitedLocations
                  })
                  .ToListAsync();
@@ -53,7 +55,7 @@ namespace EkbCulture.Controllers
                 Username = user.Username,
                 Email = user.Email,
                 Level = user.Level,
-                Icon = user.Icon,
+                Icon = user.IconUrl,
                 VisitedLocations = user.VisitedLocations
             };
             return Ok(response);
@@ -92,7 +94,7 @@ namespace EkbCulture.Controllers
                     Email = user.Email,
                     Level = user.Level,
                     VisitedLocations = user.VisitedLocations,
-                    Icon = user.Icon
+                    Icon = user.IconUrl
                 };
 
                 return Ok(response);
@@ -134,7 +136,7 @@ namespace EkbCulture.Controllers
                     Username = user.Username,
                     Email = user.Email,
                     Level = user.Level,
-                    Icon = user.Icon,
+                    Icon = user.IconUrl,
                     VisitedLocations = user.VisitedLocations
                 };
                 return Ok(response);
@@ -214,6 +216,114 @@ namespace EkbCulture.Controllers
             };
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, response);
+        }
+
+        //Добавление/обновление аватара
+        [HttpPatch("{id}/avatar")]
+        public async Task<IActionResult> UpdateAvatar(int id, IFormFile avatarFile)
+        {
+            var user = await _db.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            if (avatarFile == null || avatarFile.Length == 0)
+                return BadRequest("Файл не предоставлен");
+
+            // Создаем папку для аватарок, если её нет
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars");
+            if (!Directory.Exists(uploadsDir))
+                Directory.CreateDirectory(uploadsDir);
+
+            // Генерируем уникальное имя файла
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(avatarFile.FileName)}";
+            var filePath = Path.Combine(uploadsDir, fileName);
+
+            // Сохраняем файл
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await avatarFile.CopyToAsync(stream);
+            }
+
+            // Обновляем URL аватара
+            user.Icon = $"/avatars/{fileName}";
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Аватар обновлён",
+                avatarUrl = user.Icon
+            });
+        }
+
+        //Добавление посещенной локации
+        [HttpPatch("{id}/add-location/{locationId}")]
+        public async Task<IActionResult> AddVisitedLocation(int id, int locationId)
+        {
+            var user = await _db.Users.FindAsync(id);
+            if (user == null) return NotFound("Пользователь не найден");
+
+            // Проверяем, есть ли уже этот ID
+            if (user.VisitedLocations.Contains(locationId))
+                return Conflict("Локация уже посещена");
+
+            // Добавляем ID локации
+            var newVisited = user.VisitedLocations.ToList();
+            newVisited.Add(locationId);
+            user.VisitedLocations = newVisited.ToArray();
+
+            // Обновляем уровень
+            user.UpdateLevel();
+
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Локация добавлена в посещенные",
+                visitedLocations = user.VisitedLocations,
+                newLevel = user.Level
+            });
+        }
+
+        //Обновление юзернейма
+        [HttpPatch("{id}/username")]
+        public async Task<IActionResult> UpdateUsername(int id, [FromBody] string newUsername)
+        {
+            var user = await _db.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(newUsername))
+                return BadRequest("Имя пользователя не может быть пустым");
+
+            user.Username = newUsername;
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Имя пользователя обновлено",
+                newUsername = user.Username
+            });
+        }
+
+        //Обновление почты
+        [HttpPatch("{id}/email")]
+        public async Task<IActionResult> UpdateEmail(int id, [FromBody] string newEmail)
+        {
+            var user = await _db.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            if (!new EmailAddressAttribute().IsValid(newEmail))
+                return BadRequest("Некорректный email");
+
+            if (await _db.Users.AnyAsync(u => u.Email == newEmail))
+                return Conflict("Email уже занят");
+
+            user.Email = newEmail;
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Email обновлён",
+                newEmail = user.Email
+            });
         }
     }
 }

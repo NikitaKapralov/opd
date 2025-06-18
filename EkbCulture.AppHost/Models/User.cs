@@ -14,7 +14,7 @@ namespace EkbCulture.AppHost.Models
             // Инициализация по умолчанию
             Level = 1;
             VisitedLocations = Array.Empty<int>();
-            Icon = "";
+            IconUrl = "";
         }
         public User(string username,string mail, string hash)
         {
@@ -23,7 +23,7 @@ namespace EkbCulture.AppHost.Models
             PasswordHash = hash;
             Level = 1;
             VisitedLocations = Array.Empty<int>();
-            Icon = null;
+            IconUrl = null;
         }
         public int Id { get; set; } //ID юзера в базе данных
 
@@ -37,7 +37,7 @@ namespace EkbCulture.AppHost.Models
 
         public int[] VisitedLocations { get; set; } = Array.Empty<int>();
 
-        public string? Icon { get; set; } = "";
+        public string? IconUrl { get; set; } = "";
 
         public void UpdateLevel() =>
         Level = (VisitedLocations?.Length ?? 0) / 5 + 1;

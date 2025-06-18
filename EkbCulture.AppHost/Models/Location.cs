@@ -26,29 +26,29 @@ namespace EkbCulture.AppHost.Models
 
         public double Rating { get; set; }
 
-        //public Dictionary<User, int> RateByDict { get; set; }
+        public List<int> Ratings { get; set; }
 
-        public int[] VisitedBy { get; set; }
+        public int[] VisitedBy { get; set; } = Array.Empty<int>();
 
-        public string FirstImage { get; set; }
+        public string FirstImageUrl { get; set; } = "";
 
-        public string SecondImage { get; set; }
+        public string SecondImageUrl { get; set; } =""; 
 
-        public string ThirdImage { get; set; }
+        public string ThirdImageUrl { get; set; } = "";
 
-        /*
+        
         public void UpdateRating()
         {
             var sum = 0;
             var rateByCount = 0;
-            foreach (var item in RateByDict)
+            foreach (var item in Ratings)
             {
-                sum += item.Value;
+                sum += item;
                 rateByCount++;
             }
             Rating = sum / rateByCount;
         }
-        */
+        
 
     }
 

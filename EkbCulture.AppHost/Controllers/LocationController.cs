@@ -1,5 +1,6 @@
 ﻿using EkbCulture.AppHost.Data;
 using EkbCulture.AppHost.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -101,6 +102,112 @@ namespace EkbCulture.Controllers
             // Сохраняем изменения в БД
             await _db.SaveChangesAsync();
             return Ok(location);
+        }
+
+
+        [HttpPatch("{id}/image/{imageNumber}")]
+        public async Task<IActionResult> UpdateImage(int id, int imageNumber, IFormFile imageFile)
+        {
+            var location = await _db.Locations.FindAsync(id);
+            if (location == null) return NotFound();
+
+            if (imageFile == null || imageFile.Length == 0)
+                return BadRequest("Файл не предоставлен");
+
+            // Создаем папку для изображений локаций
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "location-images");
+            if (!Directory.Exists(uploadsDir))
+                Directory.CreateDirectory(uploadsDir);
+
+            // Генерируем уникальное имя файла
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
+            var filePath = Path.Combine(uploadsDir, fileName);
+
+            // Сохраняем файл
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            // Обновляем нужное изображение
+            var imageUrl = $"/location-images/{fileName}";
+            switch (imageNumber)
+            {
+                case 1: location.FirstImageUrl = imageUrl; break;
+                case 2: location.SecondImageUrl = imageUrl; break;
+                case 3: location.ThirdImageUrl = imageUrl; break;
+                default: return BadRequest("Номер изображения должен быть 1, 2 или 3");
+            }
+
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Изображение #{imageNumber} обновлено",
+                imageUrl
+            });
+        }
+
+        //Добавление посещения от юзера с userId
+        [HttpPatch("{id}/visit/{userId}")]
+        public async Task<IActionResult> AddVisitor(int id, int userId)
+        {
+            var location = await _db.Locations.FindAsync(id);
+            if (location == null) return NotFound("Локация не найдена");
+
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null) return NotFound("Пользователь не найден");
+
+            // Если массив не инициализирован, создаем пустой список
+            if (location.VisitedBy == null)
+                location.VisitedBy = Array.Empty<int>();
+
+            // Проверяем, не посещал ли уже
+            if (location.VisitedBy.Contains(userId))
+                return Conflict("Пользователь уже посещал эту локацию");
+
+            // Добавляем пользователя
+            var newVisitedBy = location.VisitedBy.ToList();
+            newVisitedBy.Add(userId);
+            location.VisitedBy = newVisitedBy.ToArray();
+
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Пользователь добавлен в список посетителей",
+                visitedBy = location.VisitedBy
+            });
+        }
+
+
+        [HttpPatch("{id}/rate")]
+        public async Task<IActionResult> AddRating(int id, [FromBody] int rating)
+        {
+            if (rating < 1 || rating > 5)
+                return BadRequest("Рейтинг должен быть от 1 до 5");
+
+            var location = await _db.Locations.FindAsync(id);
+            if (location == null) return NotFound();
+
+            // Если массив оценок не инициализирован, создаем
+            if (location.Ratings == null)
+                location.Ratings = new List<int>();
+
+            // Добавляем оценку
+            location.Ratings.Add(rating);
+
+            // Обновляем общий рейтинг
+            location.UpdateRating();
+
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Оценка добавлена",
+                newRating = location.Rating,
+                totalRatings = location.Ratings.Count
+            });
         }
 
         //DELETE: api/location/{id}

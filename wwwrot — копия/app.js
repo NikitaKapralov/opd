@@ -88,4 +88,84 @@ const themeToggle = document.getElementById('themeToggle');
       }
     });
   }
+  
+    async function updateAvatar(userId, file) {
+      const formData = new FormData();
+      formData.append('avatarFile', file);
+      
+      const response = await fetch(`/api/users/${userId}/avatar`, {
+          method: 'PATCH',
+          body: formData
+      });
+      
+      return response.json();
+    }
+
+    const avatarInput = document.getElementById('avatarInput');
+    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+    const saveAvatarBtn = document.getElementById('saveAvatarBtn');
+    const cancelAvatarBtn = document.getElementById('cancelAvatarBtn');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const headerAvatar = document.getElementById('headerAvatar');
+    
+    let selectedFile = null;
+
+    changeAvatarBtn.addEventListener('click', () => {
+      avatarInput.click();
+    });
+
+    avatarInput.addEventListener('change', (event) => {
+      if (event.target.files && event.target.files[0]) {
+        selectedFile = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+          profileAvatar.src = e.target.result;
+        };
+        
+        reader.readAsDataURL(selectedFile);
+        
+        changeAvatarBtn.style.display = 'none';
+        saveAvatarBtn.style.display = 'inline-block';
+        cancelAvatarBtn.style.display = 'inline-block';
+      }
+    });
+
+    saveAvatarBtn.addEventListener('click', async () => {
+      if (selectedFile) {
+        try {
+          const userId = 1; 
+          const result = await updateAvatar(userId, selectedFile);
+          
+          if (result.success) {
+            headerAvatar.src = profileAvatar.src;
+            alert('Аватар успешно обновлен!');
+          } else {
+            alert('Ошибка при обновлении аватара');
+          }
+        } catch (error) {
+          console.error('Ошибка:', error);
+          alert('Произошла ошибка при обновлении аватара');
+        }
+      }
+      
+      resetAvatarButtons();
+    });
+
+    cancelAvatarBtn.addEventListener('click', () => {
+      profileAvatar.src = '123.png';
+      resetAvatarButtons();
+    });
+
+    function resetAvatarButtons() {
+      changeAvatarBtn.style.display = 'inline-block';
+      saveAvatarBtn.style.display = 'none';
+      cancelAvatarBtn.style.display = 'none';
+      selectedFile = null;
+      avatarInput.value = '';
+    }
+
+    document.getElementById('saveChangesBtn').addEventListener('click', () => {
+      alert('Изменения сохранены!');
+    });
 });

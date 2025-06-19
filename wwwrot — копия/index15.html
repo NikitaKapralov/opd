@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Екатеринбург</title>
+  <link rel="stylesheet" href="main7.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+</head>
+<body>
+
+  <header>
+    <div class="header-logo">
+      <a href="index.html">◆ EKBCulture</a> 
+    </div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="index5.html">Рейтинг</a>
+      <a href="index6.html">Места</a>
+      <a href="index4.html">История</a>
+    </nav>
+        <button id="themeToggle" class="theme-button">
+      <i class="fa fa-adjust"></i> Переключить тему
+    </button>
+    <div class="header-actions">
+      <a href="index3.html">
+        <img src="123.png" alt="Профиль" class="profile-image" style="width:40px; height:40px; object-fit: cover; border-radius: 50%;" />
+      </a>      
+    </div>
+  </header>
+
+  <main>
+    <section class="registration-form">
+      <h1>Смотровая площадка БЦ «Высоцкий»</h1>
+      <div style="float: right; width: 420px; margin-right: 52px; margin-bottom: 25px;">
+        <img src="619fe999-ef57-4361-8643-a006e0fb78d7.jpg" alt="Плотинка вид 1" style="width: 100%; display: block; margin-bottom: 20px;">
+        <div style="float: right; width: 420px; margin-right: 112px; margin-bottom: 25px;">
+          <img src="f975d39bb48ab23fa3239882e1e8f179.jpg" alt="Плотинка вид 2" style="width: 100%; display: block;">
+        </div>
+      </div>
+      <h3>Главная смотровая площадка Екатеринбурга, куда поднимаются не только за классными видами. Она находится на 52‑м этаже бизнес‑центра, на высоте 186 метров. В хорошую погоду отсюда видно километров на 25 вдаль, и можно рассмотреть почти все знаковые до­сто­при­ме­ча­тель­но­сти Екатеринбурга — такое вот экспресс‑знакомство с городом за несколько минут.</h3>
+
+      <h2>ул. Малышева, 51, Екатеринбург, Свердловская обл., 620075<br>Часы работы<br>четверг	12:00–22:00<br>
+пятница	12:00–22:00<br>
+суббота	10:00–22:00<br>
+воскресенье	10:00–22:00<br>
+понедельник	12:00–22:00<br>
+вторник	12:00–22:00<br>
+среда	12:00–22:00
+</h2>
+    </section>
+
+  </main>  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const avatarInput = document.getElementById('avatar');
+  const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+  const profileImages = document.querySelectorAll('.profile-image');
+
+  const savedAvatar = localStorage.getItem('userAvatar');
+  if (savedAvatar) {
+    profileImages.forEach(img => img.src = savedAvatar);
+  }
+
+  changeAvatarBtn.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите файл изображения');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const base64Image = e.target.result;
+      localStorage.setItem('userAvatar', base64Image);
+      profileImages.forEach(img => img.src = base64Image);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+</script>
+    <script src="app.js"></script>
+</body>
+</html>
